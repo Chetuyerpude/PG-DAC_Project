@@ -1,0 +1,125 @@
+mysql> show tables;
++-------------------+
+| Tables_in_project |
++-------------------+
+| address           |
+| apmc_data         |
+| bank_details      |
+| identity          |
+| order_executed    |
+| products          |
+| transactions      |
+| users             |
++-------------------+
+8 rows in set (0.01 sec)
+
+mysql> desc address;
++----------+--------------+------+-----+---------+----------------+
+| Field    | Type         | Null | Key | Default | Extra          |
++----------+--------------+------+-----+---------+----------------+
+| id       | bigint       | NO   | PRI | NULL    | auto_increment |
+| address  | varchar(150) | NO   |     | NULL    |                |
+| district | varchar(30)  | NO   |     | NULL    |                |
+| pincode  | varchar(12)  | NO   |     | NULL    |                |
+| state    | varchar(30)  | NO   |     | NULL    |                |
+| village  | varchar(30)  | NO   |     | NULL    |                |
++----------+--------------+------+-----+---------+----------------+
+6 rows in set (0.00 sec)
+
+mysql> desc apmc_data;
++---------------+-------------+------+-----+---------+----------------+
+| Field         | Type        | Null | Key | Default | Extra          |
++---------------+-------------+------+-----+---------+----------------+
+| id            | bigint      | NO   | PRI | NULL    | auto_increment |
+| district      | varchar(30) | YES  |     | NULL    |                |
+| maximum_price | double      | YES  |     | NULL    |                |
+| minimum_price | double      | YES  |     | NULL    |                |
+| product_name  | varchar(30) | NO   | UNI | NULL    |                |
+| season        | varchar(20) | NO   |     | NULL    |                |
++---------------+-------------+------+-----+---------+----------------+
+6 rows in set (0.00 sec)
+
+mysql> desc bank_details;
++----------------+-------------+------+-----+---------+----------------+
+| Field          | Type        | Null | Key | Default | Extra          |
++----------------+-------------+------+-----+---------+----------------+
+| id             | bigint      | NO   | PRI | NULL    | auto_increment |
+| account_holder | varchar(45) | NO   |     | NULL    |                |
+| account_number | varchar(30) | NO   | UNI | NULL    |                |
+| bank_name      | varchar(40) | NO   |     | NULL    |                |
+| branch         | varchar(20) | NO   |     | NULL    |                |
+| ifsc_code      | varchar(30) | NO   |     | NULL    |                |
++----------------+-------------+------+-----+---------+----------------+
+6 rows in set (0.00 sec)
+
+mysql> desc identity;
++-----------------+-------------+------+-----+---------+----------------+
+| Field           | Type        | Null | Key | Default | Extra          |
++-----------------+-------------+------+-----+---------+----------------+
+| id              | bigint      | NO   | PRI | NULL    | auto_increment |
+| photo_id_number | varchar(30) | YES  |     | NULL    |                |
+| photo_id_type   | varchar(20) | YES  |     | NULL    |                |
++-----------------+-------------+------+-----+---------+----------------+
+3 rows in set (0.00 sec)
+
+mysql> desc order_executed;
++----------------+-------------+------+-----+---------+----------------+
+| Field          | Type        | Null | Key | Default | Extra          |
++----------------+-------------+------+-----+---------+----------------+
+| id             | bigint      | NO   | PRI | NULL    | auto_increment |
+| amount         | double      | NO   |     | NULL    |                |
+| expected_date  | date        | NO   |     | NULL    |                |
+| order_date     | date        | NO   |     | NULL    |                |
+| product_traded | varchar(30) | NO   |     | NULL    |                |
+| quantity       | double      | NO   |     | NULL    |                |
+| user_id        | bigint      | YES  | MUL | NULL    |                |
++----------------+-------------+------+-----+---------+----------------+
+7 rows in set (0.00 sec)
+
+mysql> desc products;
++---------------+--------------+------+-----+---------+----------------+
+| Field         | Type         | Null | Key | Default | Extra          |
++---------------+--------------+------+-----+---------+----------------+
+| id            | bigint       | NO   | PRI | NULL    | auto_increment |
+| buy_or_sell   | varchar(255) | NO   |     | NULL    |                |
+| expected_date | date         | NO   |     | NULL    |                |
+| price         | double       | NO   |     | NULL    |                |
+| product_name  | varchar(255) | NO   |     | NULL    |                |
+| quantity      | double       | NO   |     | NULL    |                |
+| user_id       | bigint       | YES  | MUL | NULL    |                |
++---------------+--------------+------+-----+---------+----------------+
+7 rows in set (0.00 sec)
+
+mysql> desc transactions;
++-------------------+-------------+------+-----+---------+----------------+
+| Field             | Type        | Null | Key | Default | Extra          |
++-------------------+-------------+------+-----+---------+----------------+
+| id                | bigint      | NO   | PRI | NULL    | auto_increment |
+| amount            | double      | NO   |     | NULL    |                |
+| trn_date          | date        | NO   |     | NULL    |                |
+| trn_number        | varchar(50) | NO   |     | NULL    |                |
+| order_executed_id | bigint      | YES  | MUL | NULL    |                |
++-------------------+-------------+------+-----+---------+----------------+
+5 rows in set (0.00 sec)
+
+mysql> desc users;
++-------------------+--------------+------+-----+---------+----------------+
+| Field             | Type         | Null | Key | Default | Extra          |
++-------------------+--------------+------+-----+---------+----------------+
+| id                | bigint       | NO   | PRI | NULL    | auto_increment |
+| dob               | date         | NO   |     | NULL    |                |
+| email             | varchar(40)  | NO   |     | NULL    |                |
+| first_name        | varchar(20)  | NO   |     | NULL    |                |
+| gender            | varchar(20)  | NO   |     | NULL    |                |
+| last_name         | varchar(20)  | NO   |     | NULL    |                |
+| middle_name       | varchar(20)  | NO   |     | NULL    |                |
+| mobile_number     | varchar(14)  | NO   |     | NULL    |                |
+| password          | varchar(255) | NO   |     | NULL    |                |
+| registration_date | date         | NO   |     | NULL    |                |
+| role              | varchar(25)  | NO   |     | NULL    |                |
+| title             | varchar(10)  | YES  |     | NULL    |                |
+| address_id        | bigint       | YES  | MUL | NULL    |                |
+| bank_details_id   | bigint       | YES  | MUL | NULL    |                |
+| identity_id       | bigint       | YES  | MUL | NULL    |                |
++-------------------+--------------+------+-----+---------+----------------+
+15 rows in set (0.00 sec)

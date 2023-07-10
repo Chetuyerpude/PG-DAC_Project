@@ -1,0 +1,25 @@
+package com.example.demo.service;
+
+import java.util.List;
+
+import com.example.demo.pojos.Product;
+
+public interface ProductService {
+
+	public String addProduct(Product product,long id);
+	
+	public String deleteProduct(Long id);
+	
+	public List<Product> searchByProductNameForBuy();
+	
+	public List<Product> searchByProductNameForSell();
+	
+	public List<Product> myProducts(long id);
+	
+	public List<Product> getAllProducts();
+
+	public String deleteProductAfterExecution(long id,Long userid);
+	
+	public void executeOrderForAnotherUser(Long id,Long Userid);
+
+}

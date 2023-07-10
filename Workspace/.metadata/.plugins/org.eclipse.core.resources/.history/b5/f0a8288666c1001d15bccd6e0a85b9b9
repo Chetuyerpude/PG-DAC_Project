@@ -1,0 +1,123 @@
+package com.example.demo.service;
+
+import java.time.LocalDate;
+import java.util.List;
+import javax.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import com.example.demo.dao.ProductDao;
+import com.example.demo.dao.UserDao;
+import com.example.demo.pojos.OrderExecuted;
+import com.example.demo.pojos.Product;
+import com.example.demo.pojos.Transaction;
+import com.example.demo.pojos.User;
+
+@Transactional
+@Service
+public class ProductServiceImpl implements ProductService {
+
+	@Autowired
+	ProductDao productDao;
+	@Autowired
+	UserDao userDao;
+	@Autowired
+	OrderService orderService;
+	
+	@Override
+	public String addProduct(Product product,long id) {
+		User user=userDao.findById(id).orElseThrow(()->new RuntimeException("user not found"));
+		product.setUser(user);
+		productDao.save(product);
+		return "product added successfully";
+	}
+
+
+	@Override
+	public String deleteProduct(Long id) {
+		productDao.deleteById(id);
+		return "product deleted successfully";
+	}
+
+
+	@Override
+	public List<Product> myProducts(long id) {
+		User user=userDao.findById(id).orElseThrow(()->new RuntimeException("user not found"));
+		List<Product>myProductList=productDao.findByUser(user);
+		return myProductList;
+	}
+
+	@Override
+	public List<Product> getAllProducts() {
+		List<Product>allProducts=productDao.findAll();
+		return allProducts;
+	}
+
+
+	@Override
+	public List<Product> searchByProductNameForBuy() {
+		List<Product> productsToBuy=productDao.listOfProducts("buy");
+		return productsToBuy;
+	}
+
+
+	@Override
+	public List<Product> searchByProductNameForSell() {
+		List<Product> productsToSell=productDao.listOfProducts("Sell");
+		return productsToSell;
+	}
+
+	@Override
+	public String deleteProductAfterExecution(long id,Long userid) {
+		
+		Product product=productDao.findById(id).orElseThrow(()->new RuntimeException("Product not found"));
+		
+		///for another user Buyer executed
+		OrderExecuted orderExecuted=new OrderExecuted();
+		double total=product.getPrice()*product.getQuantity();
+		orderExecuted.setAmount(total);
+		orderExecuted.setExpectedDate(product.getExpectedDate());
+		orderExecuted.setProductTraded(product.getProductName());
+		orderExecuted.setQuantity(product.getQuantity());
+		orderExecuted.setOrderDate(LocalDate.now());
+		orderExecuted.setUser(product.getUser()); 
+		Transaction transaction=new Transaction();
+		transaction.setAmount(total);
+		transaction.setTrnDate(LocalDate.now());
+		transaction.setOrderExecuted(orderExecuted);
+		transaction.setTrnNumber(orderService.generateRandomString());
+		orderExecuted.setTransaction(transaction);
+		orderService.addOrderExecuted(orderExecuted);
+		
+		executeOrderForAnotherUser(id,userid,transaction.getTrnNumber());
+		///for another user Seller executed
+		
+		return "Order placed successfully";
+	}
+
+
+	@Override
+	public void executeOrderForAnotherUser(Long id, Long userid,String trnNumber) {
+		Product product=
+				productDao.findById(id).orElseThrow(
+						()->new RuntimeException("Product not found"));
+		OrderExecuted orderExecutedUser=new OrderExecuted();
+		double total=product.getPrice()*product.getQuantity();
+		orderExecutedUser.setAmount(total);
+		orderExecutedUser.setExpectedDate(product.getExpectedDate());
+		orderExecutedUser.setProductTraded(product.getProductName());
+		orderExecutedUser.setQuantity(product.getQuantity());
+		orderExecutedUser.setOrderDate(LocalDate.now());
+		User user=userDao.findById(userid).orElseThrow(()->new RuntimeException("user not found"));
+		orderExecutedUser.setUser(user); 
+		Transaction userTransaction=new Transaction();
+		userTransaction.setAmount(total);
+		userTransaction.setTrnDate(LocalDate.now());
+		userTransaction.setOrderExecuted(orderExecutedUser);
+		userTransaction.setTrnNumber(orderService.generateRandomString());
+		orderExecutedUser.setTransaction(userTransaction);
+		orderService.addOrderExecuted(orderExecutedUser);
+		productDao.deleteById(product.getId());
+	
+	}
+
+}
